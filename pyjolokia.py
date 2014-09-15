@@ -133,7 +133,7 @@ class Jolokia:
 
             responseStream = urlopen(request, timeout=self.timeout)
             jsonData = responseStream.read()
-        except Exception as e:
+        except Exception, e:
             raise JolokiaError('Could not connect. Got error %s' % (e))
 
         try:
