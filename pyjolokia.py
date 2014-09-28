@@ -18,6 +18,19 @@ except ImportError:
     from urllib.request import urlopen
 
 import base64
+import inspect
+
+
+# check urlopen() timeout argument
+URLOPEN_HAS_TIMEOUT = 'timeout' in inspect.getargspec(urlopen)[0];
+
+
+def myurlopen(url, data=None, timeout=None):
+    ''' urlopen() wrapper '''
+    if (URLOPEN_HAS_TIMEOUT):
+        return(urlopen(url, data, timeout))
+    else:
+        return(urlopen(url, data))
 
 
 class Jolokia:
@@ -131,7 +144,7 @@ class Jolokia:
             if authheader:
                 request.add_header("Authorization", authheader)
 
-            responseStream = urlopen(request, timeout=self.timeout)
+            responseStream = myurlopen(request, timeout=self.timeout)
             jsonData = responseStream.read()
         except Exception, e:
             raise JolokiaError('Could not connect. Got error %s' % (e))
